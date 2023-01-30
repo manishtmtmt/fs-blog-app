@@ -50,5 +50,3 @@ router.get("/related-post/:postId", getRelatedPosts);
 router.post("/upload-image", multer.single("thumbnail"), uploadImage);
 
 module.exports = router;
-
-// 3:05:14
