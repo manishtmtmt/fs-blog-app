@@ -47,6 +47,6 @@ router.get("/search", searchPost);
 
 router.get("/related-post/:postId", getRelatedPosts);
 
-router.post("/upload-image", multer.single("thumbnail"), uploadImage);
+router.post("/upload-image", multer.single("image"), uploadImage);
 
 module.exports = router;

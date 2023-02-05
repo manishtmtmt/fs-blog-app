@@ -180,6 +180,8 @@ module.exports.getPosts = async (req, res) => {
     .skip(parseInt(pageNo) * parseInt(limit))
     .limit(parseInt(limit));
 
+  const postCount = await Post.countDocuments();
+
   res.status(200).json({
     posts: posts.map((post) => ({
       id: post._id,
@@ -188,7 +190,10 @@ module.exports.getPosts = async (req, res) => {
       slug: post.slug,
       thumbnail: post.thumbnail?.url,
       author: post.author,
+      createdAt: post.createdAt,
+      tags: post.tags,
     })),
+    postCount,
   });
 };
 
@@ -207,6 +212,8 @@ module.exports.searchPost = async (req, res) => {
       slug: post.slug,
       thumbnail: post.thumbnail?.url,
       author: post.author,
+      createdAt: post.createdAt,
+      tags: post.tags,
     })),
   });
 };
@@ -264,7 +271,6 @@ module.exports.uploadImage = async (req, res) => {
 
   if (file) {
     const { secure_url: url } = await cloudinary.uploader.upload(file.path);
+    res.status(201).json({ image: url });
   }
-
-  res.status(201).json({ image: url });
 };
