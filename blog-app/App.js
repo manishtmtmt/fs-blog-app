@@ -1,13 +1,7 @@
-//39: 35
-import { useEffect, useRef, useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  FlatList,
-  Image,
-  Dimensions,
-} from "react-native";
+import { FlatList, Text, View, StyleSheet } from "react-native";
+import PostListItem from "./app/components/PostListItem";
+import Seperator from "./app/components/Seperator";
+import Slider from "./app/components/Slider";
 
 const data = [
   {
@@ -16,6 +10,7 @@ const data = [
       "https://images.pexels.com/photos/730564/pexels-photo-730564.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
     title: "Know everything about crypto currency about crypto",
     author: "Admin",
+    createAt: Date.now(),
   },
   {
     id: "1234",
@@ -23,6 +18,7 @@ const data = [
       "https://images.pexels.com/photos/270360/pexels-photo-270360.jpeg?auto=compress&cs=tinysrgb&w=400",
     title: "Programming language to learn in 2023",
     author: "Admin",
+    createAt: Date.now(),
   },
   {
     id: "12346",
@@ -30,6 +26,7 @@ const data = [
       "https://images.pexels.com/photos/360438/pexels-photo-360438.jpeg?auto=compress&cs=tinysrgb&w=400",
     title: "How to make your first app with react and react native",
     author: "Admin",
+    createAt: Date.now(),
   },
   {
     id: "12345",
@@ -37,78 +34,44 @@ const data = [
       "https://images.pexels.com/photos/4974914/pexels-photo-4974914.jpeg?auto=compress&cs=tinysrgb&w=400",
     title: "Book to read as a programmer in 2023",
     author: "Admin",
+    createAt: Date.now(),
   },
 ];
 
-const width = Dimensions.get("window").width - 20;
-
 export default function App() {
-  const [dataToRender, setDataToRender] = useState([]);
-  const [visibleSlideIndex, setVisibleSlideIndex] = useState(0);
-  const flatList = useRef();
-  const viewabilityConfig = useRef({
-    viewAreaCoveragePercentThreshold: 50,
-  });
-
-  const onViewableItemsChanged = useRef(({ viewableItems }) => {
-    setVisibleSlideIndex(viewableItems[0]?.index || 0);
-  });
-
-  const handleScrollTo = (index) => {
-    flatList.current.scrollToIndex({ animated: false, index });
+  const ListHeaderComponent = () => {
+    return (
+      <View>
+        <Slider data={data} title="Featured Posts" />
+        <View style={{ marginTop: 15 }}>
+          <Seperator width="90%" />
+          <Text
+            style={{
+              fontWeigth: "700",
+              color: "#383838",
+              fontSize: 22,
+              marginTop: 15,
+            }}
+          >
+            Latest Posts
+          </Text>
+        </View>
+      </View>
+    );
   };
-
-  useEffect(() => {
-    const newData = [[...data].pop(), ...data, [...data].shift()];
-    setDataToRender([...newData]);
-  }, [data.length]);
-
-  useEffect(() => {
-    const length = dataToRender.length;
-    // reset slide to first
-    if (visibleSlideIndex === length - 1 && length) {
-      handleScrollTo(1);
-    }
-
-    // reset slide to last
-    if (visibleSlideIndex === 0 && length) {
-      handleScrollTo(length - 2);
-    }
-  }, [visibleSlideIndex]);
   return (
-    <View style={styles.container}>
-      <FlatList
-        ref={flatList}
-        data={dataToRender}
-        keyExtractor={(item, index) => item.id + index}
-        horizontal
-        pagingEnabled
-        showsHorizontalScrollIndicator={false}
-        initialScrollIndex={1}
-        getItemLayout={(_, index) => ({
-          length: width,
-          offset: width * index,
-          index,
-        })}
-        onViewableItemsChanged={onViewableItemsChanged.current}
-        viewabilityConfig={viewabilityConfig.current}
-        renderItem={({ item }) => (
+    <FlatList
+      data={data}
+      keyExtractor={(item) => item.id}
+      contentContainerStyle={{ paddingHorizontal: 10 }}
+      ListHeaderComponent={ListHeaderComponent}
+      renderItem={({ item }) => {
+        return (
           <View>
-            <Image
-              source={{ uri: item.thumbnail }}
-              style={{ width, height: width / 1.7, borderRadius: 7 }}
-            />
+            <PostListItem post={item} />
           </View>
-        )}
-      />
-    </View>
+        );
+      }}
+    />
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    alignSelf: "center",
-    width,
-    paddingTop: 50,
-  },
-});
