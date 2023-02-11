@@ -6,6 +6,7 @@ import {
   FlatList,
   Image,
   Dimensions,
+  TouchableWithoutFeedback,
 } from "react-native";
 
 let currentSlideIndex = 0;
@@ -30,7 +31,7 @@ const SlideIndicators = ({ data, activeSlideIndex }) =>
     );
   });
 
-export default function Slider({ data, title }) {
+export default function Slider({ data, title, onSlidePress }) {
   const [dataToRender, setDataToRender] = useState([]);
   const [visibleSlideIndex, setVisibleSlideIndex] = useState(0);
   const [activeSlideIndex, setActiveSlideIndex] = useState(0);
@@ -55,7 +56,7 @@ export default function Slider({ data, title }) {
   const startSlider = () => {
     if (currentSlideIndex <= dataToRender.length - 2) {
       intervalId = setInterval(() => {
-        flatList.current.scrollToIndex({
+        flatList.current?.scrollToIndex({
           animated: true,
           index: currentSlideIndex + 1,
         });
@@ -68,6 +69,10 @@ export default function Slider({ data, title }) {
   useEffect(() => {
     if (dataToRender.length && flatList.current) {
       startSlider();
+    }
+
+    return () => {
+      pauseSlider()
     }
   }, [dataToRender.length]);
 
@@ -101,14 +106,16 @@ export default function Slider({ data, title }) {
   }, [visibleSlideIndex]);
 
   const renderItem = ({ item }) => (
-    <View>
-      <Image source={{ uri: item.thumbnail }} style={styles.slideImage} />
-      <View style={{ width }}>
-        <Text numberOfLines={2} style={styles.title}>
-          {item.title}
-        </Text>
+    <TouchableWithoutFeedback onPress={() => onSlidePress(item)}>
+      <View>
+        <Image source={{ uri: item.thumbnail }} style={styles.slideImage} />
+        <View style={{ width }}>
+          <Text numberOfLines={2} style={styles.title}>
+            {item.title}
+          </Text>
+        </View>
       </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 
   return (
@@ -146,7 +153,6 @@ const styles = StyleSheet.create({
   container: {
     alignSelf: "center",
     width,
-    paddingTop: 50,
   },
   sliderHead: {
     flexDirection: "row",

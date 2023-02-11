@@ -4,14 +4,14 @@ import dateFormat from "dateformat";
 
 const IMAGE_WIDTH = 100;
 
-const PostListItem = ({ post }) => {
+const PostListItem = ({ post, onPress }) => {
   const { thumbnail, title, createdAt, author } = post;
   const getThumbnail = (uri) => {
     if (uri) return { uri };
     return require("../../assets/blank.jpg");
   };
   return (
-    <TouchableOpacity style={[styles.container, { flexDirection: "row" }]}>
+    <TouchableOpacity onPress={onPress} style={[styles.container, { flexDirection: "row" }]}>
       <Image
         source={getThumbnail(thumbnail)}
         style={{ width: IMAGE_WIDTH, height: IMAGE_WIDTH / 1.7 }}
