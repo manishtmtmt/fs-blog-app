@@ -1,16 +1,17 @@
 import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
 import React from "react";
+import dateFormat from "dateformat";
 
 const IMAGE_WIDTH = 100;
 
-const PostListItem = ({ post }) => {
-  const { thumbnail, title, createdAt } = post;
+const PostListItem = ({ post, onPress }) => {
+  const { thumbnail, title, createdAt, author } = post;
   const getThumbnail = (uri) => {
     if (uri) return { uri };
     return require("../../assets/blank.jpg");
   };
   return (
-    <TouchableOpacity style={[styles.container, { flexDirection: "row" }]}>
+    <TouchableOpacity onPress={onPress} style={[styles.container, { flexDirection: "row" }]}>
       <Image
         source={getThumbnail(thumbnail)}
         style={{ width: IMAGE_WIDTH, height: IMAGE_WIDTH / 1.7 }}
@@ -19,8 +20,8 @@ const PostListItem = ({ post }) => {
         <Text style={{ fontSize: 16, fontWeight: "700", color: "#383838" }}>
           {title}
         </Text>
-        <Text style={{ fontSize: 16, fontWeight: "700", color: "#d3d3d3" }}>
-          {createdAt}
+        <Text style={{ fontSize: 14, color: "#827E7E" }}>
+          {dateFormat(createdAt, 'mediumDate')} - {author}
         </Text>
       </View>
     </TouchableOpacity>

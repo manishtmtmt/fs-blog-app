@@ -1,77 +1,40 @@
-import { FlatList, Text, View, StyleSheet } from "react-native";
-import PostListItem from "./app/components/PostListItem";
-import Seperator from "./app/components/Seperator";
-import Slider from "./app/components/Slider";
+import { StyleSheet, Text, View } from 'react-native'
+import React, { useEffect, useState } from 'react';
+import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
+import { useNetInfo } from '@react-native-community/netinfo'
+import TabNavigator from './app/navigation/TabNavigator';
+import NoInternet from './app/components/NoInternet';
 
-const data = [
-  {
-    id: "123",
-    thumbnail:
-      "https://images.pexels.com/photos/730564/pexels-photo-730564.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    title: "Know everything about crypto currency about crypto",
-    author: "Admin",
-    createAt: Date.now(),
-  },
-  {
-    id: "1234",
-    thumbnail:
-      "https://images.pexels.com/photos/270360/pexels-photo-270360.jpeg?auto=compress&cs=tinysrgb&w=400",
-    title: "Programming language to learn in 2023",
-    author: "Admin",
-    createAt: Date.now(),
-  },
-  {
-    id: "12346",
-    thumbnail:
-      "https://images.pexels.com/photos/360438/pexels-photo-360438.jpeg?auto=compress&cs=tinysrgb&w=400",
-    title: "How to make your first app with react and react native",
-    author: "Admin",
-    createAt: Date.now(),
-  },
-  {
-    id: "12345",
-    thumbnail:
-      "https://images.pexels.com/photos/4974914/pexels-photo-4974914.jpeg?auto=compress&cs=tinysrgb&w=400",
-    title: "Book to read as a programmer in 2023",
-    author: "Admin",
-    createAt: Date.now(),
-  },
-];
-
-export default function App() {
-  const ListHeaderComponent = () => {
-    return (
-      <View>
-        <Slider data={data} title="Featured Posts" />
-        <View style={{ marginTop: 15 }}>
-          <Seperator width="90%" />
-          <Text
-            style={{
-              fontWeigth: "700",
-              color: "#383838",
-              fontSize: 22,
-              marginTop: 15,
-            }}
-          >
-            Latest Posts
-          </Text>
-        </View>
-      </View>
-    );
-  };
-  return (
-    <FlatList
-      data={data}
-      keyExtractor={(item) => item.id}
-      contentContainerStyle={{ paddingHorizontal: 10 }}
-      ListHeaderComponent={ListHeaderComponent}
-      renderItem={({ item }) => {
-        return (
-          <View>
-            <PostListItem post={item} />
-          </View>
-        );
-      }}
-    />
-  );
+const CUSTOM_THEME = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    background: '#fff'
+  }
 }
+
+const App = () => {
+  const [noInternet, setNoInternet] = useState(false);
+  const netinfo = useNetInfo();
+
+  const fetchNetInfo = () => {
+    const { isConnected, isInternetReachable } = netinfo;
+    if(isConnected === false && isInternetReachable === false) setNoInternet(true);
+    setNoInternet(false)
+  }
+
+  useEffect(() => {
+    fetchNetInfo();
+  }, [netinfo])
+
+  if(noInternet) return <NoInternet onRefreshPress={fetchNetInfo} />
+  return (
+    <NavigationContainer theme={CUSTOM_THEME}>
+      <TabNavigator />
+    </NavigationContainer>
+  )
+}
+
+export default App
+
+const styles = StyleSheet.create({})
