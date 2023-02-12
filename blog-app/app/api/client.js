@@ -1,5 +1,7 @@
-import axios from 'axios';
+import axios from "axios";
 
-const client = axios.create({ baseURL: `http://192.168.0.104:8000/api` });
+const client = axios.create({
+  baseURL: `https://odd-blue-camel-kilt.cyclic.app/api`,
+});
 
 export default client;
