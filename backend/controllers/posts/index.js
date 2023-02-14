@@ -1,9 +1,8 @@
 const { isValidObjectId } = require("mongoose");
 
-const FeaturedPost = require("../models/featuredPost");
-const Post = require("../models");
-const cloudinary = require("../cloud");
-const { post } = require("../routes");
+const FeaturedPost = require("../../models/featuredPost");
+const Post = require("../../models");
+const cloudinary = require("../../cloud");
 
 const FEATURED_POST_COUNT = 4;
 

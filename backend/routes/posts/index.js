@@ -1,5 +1,7 @@
 const { Router } = require("express");
 
+const authentication = require("../../middlewares/authentication");
+
 const {
   createPost,
   deletePost,
@@ -10,10 +12,10 @@ const {
   searchPost,
   getRelatedPosts,
   uploadImage,
-} = require("../controllers");
-const parseData = require("../middlewares");
-const multer = require("../middlewares/multer");
-const { postValidator, validate } = require("../middlewares/postValidator");
+} = require("../../controllers/posts");
+const parseData = require("../../middlewares");
+const multer = require("../../middlewares/multer");
+const { postValidator, validate } = require("../../middlewares/postValidator");
 
 const router = Router();
 
@@ -23,6 +25,7 @@ router.post(
   parseData,
   postValidator,
   validate,
+  authentication,
   createPost
 );
 
